@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Colorful Clock</title>
+    <link
+      href="https://fonts.googleapis.com/css?family=Dancing+Script:400,700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      * {
+        /* border: solid 1px; */
+        padding: 0;
+        margin: 0;
+        position: relative;
+        font-family: 'Dancing Script', cursive;
+        font-size: 56px;
+        text-align: center;
+        /* 讓網頁背景顏色轉換時，能平滑漸進地轉換，而不是瞬間切換 */
+        transition: 0.5s;
+      }
+      html,
+      body {
+        height: 100vh;
+      }
+
+      .container {
+        width: 50%;
+        padding: 50px;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background-color: rgba(200, 200, 200, 0.2);
+        border-radius: 30px;
+      }
+
+      @media screen and (max-width: 1024px) {
+        * {
+          font-size: 44px;
+        }
+      }
+
+      @media screen and (max-width: 768px) {
+        * {
+          font-size: 30px;
+        }
+      }
+
+      @media screen and (max-width: 400px) {
+        * {
+          font-size: 20px;
+        }
+      }
+    </style>
+  </head>
+
+  <body onload="start();">
+    <!-- ref: https://jenniferdewalt.com/color_clock.html -->
+
+    <div class="container">
+      <!-- 顯示時間 -->
+      <h5>The current time is</h5>
+      <div id="time"></div>
+      <br />
+      <!-- 顯示顏色 -->
+      <h5>The current color is</h5>
+      <div id="color"></div>
+    </div>
+
+    <script>
+      function start() {
+        // 抓出時間跟色碼要顯示的位置
+        var timeStr = document.getElementById('time');
+        var colorStr = document.getElementById('color');
+
+        // 頁面載入時，取得目前時間
+        function currentTime() {
+          var nowTime = new Date();
+          var nowHours = nowTime.getHours();
+          var nowMinus = nowTime.getMinutes();
+          var nowSeconds = nowTime.getSeconds();
+          // 讓取得的時間用 appendZero() 確保以兩位數呈現，顯示到畫面上。
+          timeStr.innerHTML =
+            appendZero(nowHours) +
+            ' : ' +
+            appendZero(nowMinus) +
+            ' : ' +
+            appendZero(nowSeconds);
+        }
+        currentTime();
+
+        // 當數字是個位數時，前面加 0
+        function appendZero(num) {
+          if (num < 10) {
+            return '0' + num;
+          } else {
+            return num;
+          }
+        }
+
+        // 頁面載入時，取得初始的隨機背景顏色
+        // 宣告一個空陣列，用來存放 RGB 色碼的三個數字。
+        var rgbNum = [];
+        // 用來存放產生的 RGB 色碼字串。
+        var rgb;
+
+        function currentColor() {
+          // 要隨機產生的 RGB 初始數字
+          var startNum;
+
+          // 產生三個 0~255 的隨機數字，並指派到 rgbNum 陣列中儲存。
+          for (i = 0; i <= 2; i++) {
+            startNum = Math.floor(Math.random() * 256);
+            rgbNum[i] = startNum;
+          }
+
+          // 將 RGB 色碼字串指派到變數 rgb 中。
+          rgb = 'rgb(' + rgbNum[0] + ', ' + rgbNum[1] + ', ' + rgbNum[2] + ')';
+          // 更改背景顏色，並將 RGB 色碼呈現到畫面上。
+          document.body.style.backgroundColor = rgb;
+          colorStr.innerHTML = rgb;
+        }
+        currentColor();
+
+        // 每秒更新時間跟顏色
+        setInterval(function() {
+          // 更新時間
+          currentTime();
+
+          // 更新顏色的條件與動作
+          if (rgbNum[2] <= 245) {
+            rgbNum[2] += 10;
+          } else if (rgbNum[1] <= 254) {
+            rgbNum[2] = 0;
+            rgbNum[1]++;
+          } else if (rgbNum[0] <= 254) {
+            rgbNum[1] = 0;
+            rgbNum[0]++;
+          } else {
+            currentColor();
+          }
+
+          rgb = 'rgb(' + rgbNum[0] + ', ' + rgbNum[1] + ', ' + rgbNum[2] + ')';
+          document.body.style.backgroundColor = rgb;
+          colorStr.innerHTML = rgb;
+        }, 1000);
+      }
+    </script>
+  </body>
+</html>
