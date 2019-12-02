@@ -4,7 +4,7 @@
 
 ## Demo
 
-Demo：https://as60160.github.io/Colorful-Clock.html
+Demo：https://as60160.github.io/Colorful-Clock/
 
 
 ## 簡介
